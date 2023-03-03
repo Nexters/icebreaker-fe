@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Talkbbokki</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.6.3.min.js"
+      integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU="
+      crossorigin="anonymous"
+    ></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Talkbbokki</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/">Topic</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/talk-order">Talk Order</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <h3 class="m-3">Topic</h3>
+    <div>
+      <div class="m-3 p-3 bg-light">
+        <h6><span class="badge bg-success">Add</span></h6>
+        <div class="input-group mb-1">
+          <span class="input-group-text" id="basic-addon1">토픽</span>
+          <textarea
+            rows="3"
+            id="topic_add"
+            class="form-control"
+            placeholder="Topic"
+            aria-label="Username"
+            aria-describedby="basic-addon1"
+          ></textarea>
+        </div>
+        <div class="input-group mb-1">
+          <span class="input-group-text" id="basic-addon1">레벨</span>
+          <input
+            id="cate_add"
+            type="text"
+            class="form-control"
+            placeholder="Level"
+            aria-label="Username"
+            aria-describedby="basic-addon1"
+          />
+        </div>
+        <div class="input-group mb-1">
+          <span class="input-group-text" id="basic-addon1">태그</span>
+          <input
+            id="tag_add"
+            type="text"
+            class="form-control"
+            placeholder="Tag"
+            aria-label="Username"
+            aria-describedby="basic-addon1"
+            value=""
+          />
+        </div>
+        <div class="d-flex flex-row-reverse">
+          <button onclick="addTopic()" class="btn btn-success">추가</button>
+        </div>
+      </div>
+    </div>
+
+    <hr class="m-3 p-3" />
+
+    <% for(var i = 0; i < topics.length; i++) { %>
+    <div class="m-3 p-3 bg-light">
+      <h6><span class="badge bg-secondary">ID: <%= topics[i].id %></span></h6>
+      <div class="input-group mb-1">
+        <span class="input-group-text" id="basic-addon1">토픽</span>
+        <textarea
+          rows="3"
+          id="topic_<%= topics[i].id %>"
+          class="form-control"
+          placeholder="Topic"
+          aria-label="Username"
+          aria-describedby="basic-addon1"
+        >
+<%= topics[i].name %></textarea
+        >
+      </div>
+      <div class="input-group mb-1">
+        <span class="input-group-text" id="basic-addon1">레벨</span>
+        <input
+          id="cate_<%= topics[i].id %>"
+          type="text"
+          class="form-control"
+          placeholder="Level"
+          aria-label="Username"
+          aria-describedby="basic-addon1"
+          value="<%= topics[i].category %>"
+        />
+      </div>
+      <div class="input-group mb-1">
+        <span class="input-group-text" id="basic-addon1">태그</span>
+        <input
+          id="tag_<%= topics[i].id %>"
+          type="text"
+          class="form-control"
+          placeholder="Tag"
+          aria-label="Username"
+          aria-describedby="basic-addon1"
+          value="<%= topics[i].tag %>"
+        />
+      </div>
+      <div class="d-flex justify-content-between mt-3">
+        <button
+          onclick="deleteTopic(<%= topics[i].id %>)"
+          class="btn btn-danger"
+        >
+          삭제
+        </button>
+        <button
+          onclick="updateTopic(<%= topics[i].id %>)"
+          class="btn btn-primary"
+        >
+          수정
+        </button>
+      </div>
+    </div>
+    <div class="mb-4">&nbsp</div>
+    <% } %>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      function updateTopic(idx) {
+        let id = idx;
+        let new_topic = $("#topic_" + idx).val();
+        let new_level = $("#cate_" + idx).val();
+        let new_tag = $("#tag_" + idx).val();
+        if (!new_topic || !new_level || !new_tag) {
+          return;
+        }
+        axios({
+          method: "post",
+          url: "/api/update-topics",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          data: {
+            id: id,
+            name: new_topic,
+            category: new_level,
+            tag: new_tag,
+          },
+        })
+          .then((res) => {
+            Swal.fire("수정됨!", "").then(() => {
+              location.reload();
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+
+      function addTopic() {
+        let new_topic = $("#topic_add").val();
+        let new_level = $("#cate_add").val();
+        let new_tag = $("#tag_add").val();
+
+        axios({
+          method: "post",
+          url: "/api/add-topics",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          data: {
+            name: new_topic,
+            category: new_level,
+            tag: new_tag,
+          },
+        })
+          .then((res) => {
+            Swal.fire("추가됨!", "").then(() => {
+              location.reload();
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+
+      function deleteTopic(idx) {
+        let new_topic = $("#topic_" + idx).val();
+        let new_level = $("#cate_" + idx).val();
+        let new_tag = $("#tag_" + idx).val();
+        Swal.fire({
+          title: "이 토픽을 지우겠어요? (ID:" + idx + ")",
+          showCancelButton: true,
+          confirmButtonText: "삭제",
+          cancelButtonText: `취소`,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            axios({
+              method: "post",
+              url: "/api/delete-topics",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              data: {
+                id: idx,
+              },
+            })
+              .then((res) => {
+                Swal.fire("삭제됨!", "").then(() => {
+                  location.reload();
+                });
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

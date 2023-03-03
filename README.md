@@ -1,3 +1,0 @@
-# IceBreaker FE
-
-Admin
