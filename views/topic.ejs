@@ -37,10 +37,12 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="/">Topic</a>
+              <a class="nav-link active" aria-current="page" href="/admin"
+                >Topic</a
+              >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/talk-order">Talk Order</a>
+              <a class="nav-link" href="/admin/talk-order">Talk Order</a>
             </li>
           </ul>
         </div>
@@ -165,7 +167,7 @@
         }
         axios({
           method: "post",
-          url: "/api/update-topics",
+          url: "/admin/api/update-topics",
           headers: {
             "Content-Type": "application/json",
           },
@@ -193,7 +195,7 @@
 
         axios({
           method: "post",
-          url: "/api/add-topics",
+          url: "/admin/api/add-topics",
           headers: {
             "Content-Type": "application/json",
           },
@@ -226,7 +228,7 @@
           if (result.isConfirmed) {
             axios({
               method: "post",
-              url: "/api/delete-topics",
+              url: "/admin/api/delete-topics",
               headers: {
                 "Content-Type": "application/json",
               },
